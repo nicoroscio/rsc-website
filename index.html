@@ -1,0 +1,592 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RSC Enterprises</title>
+    <meta name="description" content="RSC Enterprises — Distressed Assets, Special Situations, Private Capital. Italian Operations." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --abyss: #04070d;
+        --abyss-2: #060b14;
+        --fog: #e9edf3;
+        --mist: #97a1b3;
+        --faint: #4b5567;
+        --bolt: #1f3bff;
+        --bolt-soft: rgba(31, 59, 255, 0.55);
+        --hairline: rgba(233, 237, 243, 0.1);
+        --mono: "IBM Plex Mono", "SFMono-Regular", Menlo, monospace;
+        --serif: "Fraunces", Georgia, serif;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        background: var(--abyss);
+        color: var(--fog);
+        font-family: var(--serif);
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+        overflow-x: hidden;
+      }
+
+      ::selection {
+        background: var(--bolt);
+        color: var(--fog);
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      /* ---------- grain ---------- */
+      body::after {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 50;
+        opacity: 0.05;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      }
+
+      /* ---------- depth contours canvas ---------- */
+      #sea {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        display: block;
+        opacity: 0.85;
+      }
+
+      /* ---------- top bar ---------- */
+      .bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 40;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 22px clamp(20px, 4vw, 56px);
+        font-family: var(--mono);
+        font-size: 11px;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: var(--mist);
+        mix-blend-mode: normal;
+      }
+
+      .bar-logo {
+        display: block;
+        height: 30px;
+        width: auto;
+        filter: drop-shadow(0 0 10px rgba(31, 59, 255, 0.25));
+        opacity: 0;
+        transform: translateY(-8px);
+        pointer-events: none;
+        transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+
+      .bar-logo.show {
+        opacity: 1;
+        transform: none;
+        pointer-events: auto;
+      }
+
+      .bar .contact-link {
+        position: relative;
+        padding-bottom: 2px;
+      }
+
+      .bar .contact-link::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        height: 1px;
+        background: var(--mist);
+        transform: scaleX(0);
+        transform-origin: right;
+        transition: transform 0.45s cubic-bezier(0.77, 0, 0.18, 1);
+      }
+
+      .bar .contact-link:hover::after {
+        transform: scaleX(1);
+        transform-origin: left;
+      }
+
+      main {
+        position: relative;
+        z-index: 10;
+      }
+
+      section {
+        position: relative;
+      }
+
+      /* ---------- hero ---------- */
+      .hero {
+        min-height: 100svh;
+        display: grid;
+        place-items: center;
+        text-align: center;
+        padding: clamp(96px, 14vh, 160px) clamp(20px, 5vw, 64px) clamp(72px, 10vh, 120px);
+      }
+
+      .hero-inner {
+        display: grid;
+        gap: clamp(28px, 4.5vh, 48px);
+        justify-items: center;
+        max-width: 980px;
+      }
+
+      .hero .logo {
+        width: clamp(240px, 34vw, 460px);
+        height: auto;
+        filter: drop-shadow(0 0 38px rgba(31, 59, 255, 0.18));
+      }
+
+      .kicker {
+        font-family: var(--mono);
+        font-size: clamp(10px, 1vw, 12px);
+        letter-spacing: 0.34em;
+        text-transform: uppercase;
+        color: var(--mist);
+        display: inline-flex;
+        align-items: center;
+        gap: 18px;
+      }
+
+      .kicker::before,
+      .kicker::after {
+        content: "";
+        width: clamp(24px, 5vw, 64px);
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--faint));
+      }
+
+      .kicker::after {
+        background: linear-gradient(90deg, var(--faint), transparent);
+      }
+
+      .kicker-items {
+        line-height: 2.1;
+      }
+
+      .kicker-items span {
+        white-space: nowrap;
+      }
+
+      .hero h1 {
+        font-weight: 300;
+        font-size: clamp(30px, 4.6vw, 62px);
+        line-height: 1.18;
+        letter-spacing: -0.01em;
+        max-width: 20ch;
+      }
+
+      .hero h1 em {
+        font-style: italic;
+        color: var(--mist);
+      }
+
+      .scroll-cue {
+        position: absolute;
+        bottom: 28px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 1px;
+        height: 56px;
+        background: var(--hairline);
+        overflow: hidden;
+      }
+
+      .scroll-cue::after {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: 0;
+        width: 100%;
+        height: 50%;
+        background: var(--bolt);
+        animation: sound 2.6s cubic-bezier(0.77, 0, 0.18, 1) infinite;
+      }
+
+      @keyframes sound {
+        0% { top: -50%; }
+        60%, 100% { top: 110%; }
+      }
+
+      /* ---------- ticker ---------- */
+      .ticker {
+        border-top: 1px solid var(--hairline);
+        border-bottom: 1px solid var(--hairline);
+        overflow: hidden;
+        white-space: nowrap;
+        padding: 16px 0;
+        background: rgba(4, 7, 13, 0.6);
+        backdrop-filter: blur(6px);
+      }
+
+      .ticker-track {
+        display: inline-flex;
+        animation: drift 36s linear infinite;
+      }
+
+      .ticker span {
+        font-family: var(--mono);
+        font-size: 11px;
+        letter-spacing: 0.3em;
+        text-transform: uppercase;
+        color: var(--faint);
+        padding: 0 34px;
+        display: inline-flex;
+        align-items: center;
+        gap: 34px;
+      }
+
+      .ticker span::after {
+        content: "◆";
+        font-size: 6px;
+        color: var(--bolt);
+      }
+
+      @keyframes drift {
+        to { transform: translateX(-50%); }
+      }
+
+      /* ---------- pillars ---------- */
+      .pillars {
+        padding: clamp(96px, 16vh, 200px) clamp(20px, 5vw, 64px);
+        max-width: 1180px;
+        margin: 0 auto;
+      }
+
+      .pillar {
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        align-items: baseline;
+        gap: clamp(18px, 4vw, 56px);
+        padding: clamp(26px, 4.5vh, 44px) 8px;
+        border-bottom: 1px solid var(--hairline);
+        transition: padding-left 0.5s cubic-bezier(0.77, 0, 0.18, 1);
+      }
+
+      .pillar:first-child {
+        border-top: 1px solid var(--hairline);
+      }
+
+      .pillar:hover {
+        padding-left: clamp(16px, 2vw, 28px);
+      }
+
+      .pillar .num {
+        font-family: var(--mono);
+        font-size: 11px;
+        letter-spacing: 0.2em;
+        color: var(--faint);
+        transition: color 0.4s ease;
+      }
+
+      .pillar:hover .num {
+        color: var(--bolt);
+      }
+
+      .pillar h2 {
+        font-weight: 300;
+        font-size: clamp(28px, 5vw, 64px);
+        line-height: 1.05;
+        letter-spacing: -0.01em;
+        color: var(--fog);
+        transition: color 0.4s ease, text-shadow 0.4s ease;
+      }
+
+      .pillar:hover h2 {
+        text-shadow: 0 0 32px rgba(31, 59, 255, 0.35);
+      }
+
+      .pillar .tick {
+        font-family: var(--mono);
+        font-size: 14px;
+        color: var(--faint);
+        transition: transform 0.5s cubic-bezier(0.77, 0, 0.18, 1), color 0.4s ease;
+      }
+
+      .pillar:hover .tick {
+        transform: translateX(6px) rotate(45deg);
+        color: var(--bolt);
+      }
+
+      /* ---------- creed ---------- */
+      .creed {
+        padding: clamp(80px, 14vh, 180px) clamp(20px, 5vw, 64px);
+        text-align: center;
+      }
+
+      .creed p {
+        font-style: italic;
+        font-weight: 300;
+        font-size: clamp(20px, 2.6vw, 34px);
+        color: var(--mist);
+        max-width: 30ch;
+        margin: 0 auto;
+        line-height: 1.5;
+      }
+
+      /* ---------- contact ---------- */
+      .contact {
+        padding: clamp(96px, 16vh, 200px) clamp(20px, 5vw, 64px);
+        text-align: center;
+        display: grid;
+        gap: clamp(24px, 4vh, 40px);
+        justify-items: center;
+      }
+
+      .contact .email {
+        font-family: var(--serif);
+        font-weight: 300;
+        font-size: clamp(22px, 4.4vw, 56px);
+        letter-spacing: 0.01em;
+        position: relative;
+        padding-bottom: 10px;
+        word-break: break-all;
+      }
+
+      .contact .email::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--bolt), transparent);
+        transform: scaleX(0.25);
+        opacity: 0.5;
+        transition: transform 0.6s cubic-bezier(0.77, 0, 0.18, 1), opacity 0.6s ease;
+      }
+
+      .contact .email:hover::after {
+        transform: scaleX(1);
+        opacity: 1;
+      }
+
+      /* ---------- footer ---------- */
+      footer {
+        position: relative;
+        z-index: 10;
+        border-top: 1px solid var(--hairline);
+        padding: 30px clamp(20px, 4vw, 56px) 38px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px;
+        align-items: center;
+        justify-content: space-between;
+        font-family: var(--mono);
+        font-size: 10px;
+        letter-spacing: 0.26em;
+        text-transform: uppercase;
+        color: var(--faint);
+      }
+
+      .footer-logo {
+        display: block;
+        height: 26px;
+        width: auto;
+        filter: drop-shadow(0 0 8px rgba(31, 59, 255, 0.2));
+      }
+
+      /* ---------- reveal on scroll ---------- */
+      .reveal {
+        opacity: 0;
+        transform: translateY(26px);
+        transition: opacity 1s cubic-bezier(0.22, 1, 0.36, 1), transform 1s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+
+      .reveal.in {
+        opacity: 1;
+        transform: none;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .ticker-track { animation: none; }
+        .scroll-cue::after { animation: none; }
+        .reveal { opacity: 1; transform: none; transition: none; }
+        html { scroll-behavior: auto; }
+      }
+
+      @media (max-width: 640px) {
+        .pillar {
+          grid-template-columns: auto 1fr;
+        }
+        .pillar .tick {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="sea" aria-hidden="true"></canvas>
+
+    <header class="bar">
+      <a href="#top">
+        <img class="bar-logo" src="assets/LOGORSC1.png" alt="RSC Enterprises" />
+      </a>
+      <a class="contact-link" href="#contact">Contact</a>
+    </header>
+
+    <main>
+      <section class="hero" id="top">
+        <div class="hero-inner">
+          <img class="logo reveal in" src="assets/LOGORSC1.png" alt="RSC Enterprises" />
+          <p class="kicker reveal in"><span class="kicker-items"><span>Distressed Assets</span> &nbsp;·&nbsp; <span>Special Situations</span> &nbsp;·&nbsp; <span>Private Capital</span></span></p>
+          <h1 class="reveal in">Pragmatic analysis, <em>data-backed</em> decisions.</h1>
+        </div>
+        <div class="scroll-cue" aria-hidden="true"></div>
+      </section>
+
+      <div class="ticker" aria-hidden="true">
+        <div class="ticker-track">
+          <span>Distressed Assets</span><span>Special Situations</span><span>Private Capital</span><span>Italian Operations</span>
+          <span>Distressed Assets</span><span>Special Situations</span><span>Private Capital</span><span>Italian Operations</span>
+        </div>
+      </div>
+
+      <section class="pillars">
+        <div class="pillar reveal">
+          <span class="num">01</span>
+          <h2>Distressed Assets</h2>
+          <span class="tick">→</span>
+        </div>
+        <div class="pillar reveal">
+          <span class="num">02</span>
+          <h2>Special Situations</h2>
+          <span class="tick">→</span>
+        </div>
+        <div class="pillar reveal">
+          <span class="num">03</span>
+          <h2>Private Capital</h2>
+          <span class="tick">→</span>
+        </div>
+      </section>
+
+      <section class="creed">
+        <p class="reveal">Pragmatic analysis, data-backed decisions.</p>
+      </section>
+
+      <section class="contact" id="contact">
+        <p class="kicker reveal">Contact</p>
+        <a class="email reveal" href="mailto:info@rsc-enterprises.it">info@rsc-enterprises.it</a>
+      </section>
+    </main>
+
+    <footer>
+      <img class="footer-logo" src="assets/LOGORSC1.png" alt="RSC Enterprises" />
+      <span>Italian Operations</span>
+    </footer>
+
+    <script>
+      // Depth-contour field: slow sine lines drifting like a nautical chart.
+      const canvas = document.getElementById("sea");
+      const ctx = canvas.getContext("2d");
+      let w, h, dpr;
+
+      function resize() {
+        dpr = Math.min(window.devicePixelRatio || 1, 2);
+        w = canvas.clientWidth = window.innerWidth;
+        h = canvas.clientHeight = window.innerHeight;
+        canvas.width = w * dpr;
+        canvas.height = h * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+      resize();
+      window.addEventListener("resize", resize);
+
+      const LINES = 14;
+      const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      let t = 0;
+
+      function draw() {
+        ctx.clearRect(0, 0, w, h);
+
+        // abyssal gradient backdrop
+        const g = ctx.createLinearGradient(0, 0, 0, h);
+        g.addColorStop(0, "#04070d");
+        g.addColorStop(0.65, "#050a13");
+        g.addColorStop(1, "#070d1a");
+        ctx.fillStyle = g;
+        ctx.fillRect(0, 0, w, h);
+
+        // faint radial glow, like a light far below the surface
+        const r = ctx.createRadialGradient(w * 0.5, h * 0.92, 0, w * 0.5, h * 0.92, h * 0.9);
+        r.addColorStop(0, "rgba(31, 59, 255, 0.10)");
+        r.addColorStop(1, "rgba(31, 59, 255, 0)");
+        ctx.fillStyle = r;
+        ctx.fillRect(0, 0, w, h);
+
+        for (let i = 0; i < LINES; i++) {
+          const depth = i / (LINES - 1);
+          const baseY = h * (0.45 + depth * 0.6);
+          const amp = 14 + depth * 34;
+          const speed = 0.00016 + depth * 0.00012;
+          const wavelength = 0.0026 - depth * 0.0009;
+
+          ctx.beginPath();
+          for (let x = -10; x <= w + 10; x += 6) {
+            const y =
+              baseY +
+              Math.sin(x * wavelength + t * speed * 1000 + i * 1.7) * amp +
+              Math.sin(x * wavelength * 2.3 + t * speed * 640 + i) * amp * 0.3;
+            x === -10 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+          }
+          const alpha = 0.05 + depth * 0.1;
+          ctx.strokeStyle = `rgba(118, 134, 188, ${alpha})`;
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        }
+
+        t += 1;
+        if (!reduced) requestAnimationFrame(draw);
+      }
+      draw();
+
+      // Scroll reveals
+      const io = new IntersectionObserver(
+        (entries) =>
+          entries.forEach((e) => {
+            if (e.isIntersecting) {
+              e.target.classList.add("in");
+              io.unobserve(e.target);
+            }
+          }),
+        { threshold: 0.2 }
+      );
+      document.querySelectorAll(".reveal:not(.in)").forEach((el) => io.observe(el));
+
+      // Show the header logo only once the hero logo has left the viewport
+      const heroLogo = document.querySelector(".hero .logo");
+      const barLogo = document.querySelector(".bar-logo");
+      new IntersectionObserver(
+        ([e]) => barLogo.classList.toggle("show", !e.isIntersecting),
+        { threshold: 0 }
+      ).observe(heroLogo);
+    </script>
+  </body>
+</html>
